@@ -1,0 +1,10 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">OCR ile Fatura Analizi</h1>
+    <p>Görüntüden elde edilecek text ile fatura analizi için <a href="@Url.Action("OCRProcess", "OCR")">geleneksel OCR</a></p>
+    <p>gemini-1.5-flash ile fatura analizi için <a href="@Url.Action("OcrAIProcess", "OcrAI")">geleneksel OCR</a></p>
+
+</div>

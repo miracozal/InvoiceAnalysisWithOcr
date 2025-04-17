@@ -1,0 +1,132 @@
+﻿@model invoiceOCR.Models.InvoiceModel
+@{
+    ViewData["Title"] = "OCR AI";
+}
+
+@section Styles {
+    <style>
+        .ocr-container {
+            max-width: 800px;
+            margin: auto;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.08);
+            padding: 30px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        form {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        input[type="file"] {
+            flex: 1;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .result-section {
+            margin-top: 20px;
+        }
+
+        h3 {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+            margin-top: 25px;
+            color: #34495e;
+        }
+
+        .info-row {
+            display: grid;
+            grid-template-columns: 180px auto;
+            margin-bottom: 8px;
+        }
+
+            .info-row .label {
+                font-weight: bold;
+                color: #333;
+            }
+
+        .loading-msg {
+            color: #e67e22;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 4px solid #ccc;
+            border-top: 4px solid #4CAF50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+    </style>
+}
+
+<div class="ocr-container">
+    <h2>OCR AI</h2>
+    <div id="ai-loading" class="loading-msg" style="display: none;">
+        <span class="spinner"></span> AI ile fatura analiz ediliyor, lütfen bekleyiniz...
+    </div>
+    <form asp-controller="OcrAI" asp-action="OcrAIProcess" method="post" enctype="multipart/form-data">
+        <input type="file" name="imageFile" accept="image/*" />
+        <button type="submit">OCR Başlat</button>
+    </form>
+
+    @if (Model != null)
+    {
+        <div class="result-section">
+            <h3>Fatura Bilgileri</h3>
+            <div class="info-row"><span class="label">Fatura No:</span> @Model.InvoiceNumber</div>
+            <div class="info-row"><span class="label">Fatura Tarihi:</span> @Model.InvoiceDate</div>
+            <div class="info-row"><span class="label">Toplam Tutar:</span> @Model.GrandTotal ₺</div>
+
+            <h3>Satıcı Bilgileri</h3>
+            <div class="info-row"><span class="label">Ünvan:</span> @Model.SellerTitle</div>
+            <div class="info-row"><span class="label">Adres:</span> @Model.SellerAddress</div>
+            <div class="info-row"><span class="label">Telefon:</span> @Model.SellerPhone</div>
+            <div class="info-row"><span class="label">Vergi No:</span> @Model.SellerVKN</div>
+            <div class="info-row"><span class="label">Mersis No:</span> @Model.SellerMersisNo</div>
+            <div class="info-row"><span class="label">Mağaza:</span> @Model.StoreInfo</div>
+
+            <h3>Alıcı Bilgileri</h3>
+            <div class="info-row"><span class="label">Ad Soyad:</span> @Model.BuyerName</div>
+            <div class="info-row"><span class="label">Adres:</span> @Model.BuyerAddress</div>
+            <div class="info-row"><span class="label">Müşteri No:</span> @Model.BuyerCustomerNo</div>
+            <div class="info-row"><span class="label">Şube / Semt:</span> @Model.BuyerBranch</div>
+        </div>
+    }
+    @section Scripts {
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(function () {
+                $('form').on('submit', function () {
+                    $('#ai-loading').show();
+                });
+            });
+        </script>
+    }
+</div>
